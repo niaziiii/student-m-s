@@ -2,16 +2,23 @@ const express = require('express');
 const userController = require('../controller/userController.js');
 const userRouter = express.Router();
 
+
+userRouter.post('/login', userController.loginUser);
+userRouter.post('/islogged', userController.protect);
+
+
+
 userRouter
-    .route('/')
+    .route('/user')
     .get(userController.allUsers)
     .post(userController.createUser)
 
 
 userRouter
-    .route('/:id')
+    .route('/user/:id')
     .get(userController.getUser)
     .post(userController.updateUser);
+
 
 
 
