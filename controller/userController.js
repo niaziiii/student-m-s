@@ -60,7 +60,6 @@ module.exports.loginUser = catchAsync(async (req, res, next) => {
 
 module.exports.protect = catchAsync(async (req, res, next) => {
     //  1). getting token and check it
-console.log(req.body);
     let token;
     if (
         req.headers.authorization &&
@@ -72,7 +71,6 @@ console.log(req.body);
 
 
 
-    console.log(token);
     if (!token) return next(new AppError('Your are not logged in! Please login to get access', 401));
 
     // 2). Verification token like user id 
