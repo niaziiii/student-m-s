@@ -60,7 +60,7 @@ module.exports.loginUser = catchAsync(async (req, res, next) => {
 
 module.exports.protect = catchAsync(async (req, res, next) => {
     //  1). getting token and check it
-
+console.log(req.body);
     let token;
     if (
         req.headers.authorization &&
@@ -68,8 +68,11 @@ module.exports.protect = catchAsync(async (req, res, next) => {
     ) { token = req.headers.authorization.split(' ')[1]; }
     else if (req.cookies.jwt) { token = req.cookies.jwt }
     else if (req.headers.jwt) { token = req.headers.jwt }
+    else if (req.body.jwt) { token = req.body.jwt }
 
 
+
+    console.log(token);
     if (!token) return next(new AppError('Your are not logged in! Please login to get access', 401));
 
     // 2). Verification token like user id 
