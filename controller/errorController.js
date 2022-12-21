@@ -18,29 +18,23 @@ const setJwtError = err => new AppError(`${err.message}! Please login again`, 40
 
 
 const productionError = (err, req, res) => {
-    //   operational trusted error
-        if (err.isOperational) {
-            return res.status(err.statusCode).json({
-                message: err.message ? err.message : err.Newmessage,
-                statusCode: err.statusCode,
-                isOperational: err.isOperational,
-            })
-        }
-        return res.status(500).json({
-            status: err.status,
-            // message: 'something went very wrong!',
-        })
+    return res.status(err.statusCode).json({
+        message: err.message ? err.message : err.Newmessage,
+        statusCode: err.statusCode,
+        isOperational: err.isOperational,
+    })
+
 }
 
 const developmentError = (err, req, res) => {
-        res.status(err.statusCode).json({
-            message: err.message,
-            status: err.status,
-            statusCode: err.statusCode,
-            isOperational: err.isOperational,
-            error: err,
-            stack: err.stack
-        })
+    res.status(err.statusCode).json({
+        message: err.message,
+        status: err.status,
+        statusCode: err.statusCode,
+        isOperational: err.isOperational,
+        error: err,
+        stack: err.stack
+    })
 }
 
 
@@ -53,9 +47,9 @@ const globalErrorHandler = ((err, req, res, next) => {
     if (process.env.NODE_ENV === 'development') {
         developmentError(err, req, res)
     }
+
     else if (process.env.NODE_ENV === 'production') {
         let error = { ...err }
-        // error.message = err.message
 
         if (err.name === 'MongoNetworkError') error.message = 'Mongo Not working';
         if (err.name === 'CastError') error = setCastError(error);
@@ -68,9 +62,10 @@ const globalErrorHandler = ((err, req, res, next) => {
         if (err.name === 'TokenExpiredError') error = setJwtError(error);
 
 
+        developmentError(err, req, res)
 
 
-        productionError(error, req, res)
+        // productionError(error, req, res)
     }
 
     next()

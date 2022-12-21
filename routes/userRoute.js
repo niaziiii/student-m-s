@@ -3,19 +3,14 @@ const userController = require('../controller/userController.js');
 const userRouter = express.Router();
 
 
-userRouter.post('/login', userController.loginUser);
-userRouter.post('/islogged', userController.protect);
-
-
-
 userRouter
-    .route('/user')
+    .route('/')
     .get(userController.allUsers)
     .post(userController.createUser)
 
 
 userRouter
-    .route('/user/:id')
+    .route('/:id')
     .get(userController.getUser)
     .post(userController.updateUser);
 

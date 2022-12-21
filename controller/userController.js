@@ -21,7 +21,7 @@ const createSendTokenCookie = (user, statusCode, res) => {
         httpOnly: true
     };
 
-    if (process.env.NODE.ENV === "production") cookieOptions.secure = true;
+    // if (process.env.NODE.ENV === "production") cookieOptions.secure = true;
     res.cookie('jwt', token, cookieOptions)
 
     user.password = undefined;
@@ -49,9 +49,9 @@ module.exports.loginUser = catchAsync(async (req, res, next) => {
 
     if (!user) return next(new AppError('incorrect email & password', 401));
 
-    if (password !== user.password) next(new AppError('incorrect email & password', 401));
+    if (password !== user.password)return next(new AppError('incorrect password', 401));
 
-    if (!user) return next(new AppError('incorrect email & password', 401));
+    if (!user) return next(new AppError('incorrect user', 401));
 
     createSendTokenCookie(user, 200, res)
 
