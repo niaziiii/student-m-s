@@ -9,7 +9,8 @@ const app = express();
 const userRouter = require('./routes/userRoute');
 const bookRoute = require('./routes/bookRoute');
 const authRouter = require('./routes/authRoute');
-
+const groupRoute = require('./routes/groupRouter');
+const questionRoute = require('./routes/questionRoute');
 
 app.use(express.static(`${__dirname}/public/`));
 
@@ -25,7 +26,8 @@ app.use(cors())
 app.use('/api/users', userRouter);
 app.use('/api/books', bookRoute);
 app.use('/api/auth', authRouter);
-
+app.use('/api/group', groupRoute);
+app.use('/api/question', questionRoute);
 
 
 app.all('*', (req, res, next) => {
