@@ -1,5 +1,5 @@
 const mainHandler = require('./mainHandler.js')
-const UserModel = require('../model/userModel.js')
+const UserModel = require('../model/userModel')
 const jwt = require('jsonwebtoken')
 const { promisify } = require('util')
 const catchAsync = require('../utillties/catchAsync.js')
@@ -37,7 +37,7 @@ const createSendTokenCookie = (user, statusCode, res) => {
 
 
 module.exports.allUsers = mainHandler.getAllDoc(UserModel);
-module.exports.getUser = mainHandler.getOneDoc(UserModel);
+module.exports.getUser = mainHandler.getOneDoc(UserModel, { path: 'report' });
 module.exports.createUser = mainHandler.createOne(UserModel);
 module.exports.updateUser = mainHandler.updateOne(UserModel);
 
@@ -49,11 +49,15 @@ module.exports.loginUser = catchAsync(async (req, res, next) => {
 
     if (!user) return next(new AppError('incorrect email & password', 401));
 
-    if (password !== user.password)return next(new AppError('incorrect password', 401));
+    if (password !== user.password) return next(new AppError('incorrect password', 401));
 
     if (!user) return next(new AppError('incorrect user', 401));
 
-    createSendTokenCookie(user, 200, res)
+    let mainUser;
+    if (user.role === 'admin') mainUser = await UserModel.findById(user.id)
+    else mainUser = await UserModel.findById(user.id).populate({ path: 'report' });
+
+    createSendTokenCookie(mainUser, 200, res)
 
 })
 
@@ -79,16 +83,12 @@ module.exports.protect = catchAsync(async (req, res, next) => {
 
     // 3). Check if there user stil exit || deleted himself
     const user = await UserModel.findOne({ _id: decoded.id })
-
-    if (!user) {
-        return next(new AppError('The user is not belong to this token! Please login to get access', 401));
-    }
+    if (!user) return next(new AppError('The user is not belong to this token! Please login to get access', 401));
 
 
-    req.user = user;
-    res.locals.user = user;
+    let mainUser;
+    if (user.role === 'admin') mainUser = await UserModel.findById(user.id)
+    else mainUser = await UserModel.findById(user.id).populate({ path: 'report' });
 
-
-    createSendTokenCookie(user, 200, res)
-
+    createSendTokenCookie(mainUser, 200, res)
 });

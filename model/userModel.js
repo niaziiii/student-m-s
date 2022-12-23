@@ -29,6 +29,10 @@ const userSchema = new mongoose.Schema({
         required: true,
         default: true
     },
+    report: [{
+        type: mongoose.Schema.ObjectId,
+        ref: 'report'
+    }],
     cnic: String,
     phoneNumber: String,
     address: String,
