@@ -7,6 +7,7 @@ const multer = require('multer');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
+    console.log('file',file);
     cb(null, './public/images/books');  // set the destination folder
   },
   filename: function (req, file, cb) {
@@ -23,17 +24,18 @@ module.exports.allBook = mainHandler.getAllDoc(Books);
 
 
 module.exports.createBook = catchAsync(async (req, res, next) => {
-  var fullUrl = req.protocol + '://' + req.get('host');
-  if (req.file) {
-    req.body.coverImage = `${fullUrl}/images/books/${req.file.filename}`
-  }
-  const doc = await Books.create(req.body);
+  // var fullUrl = req.protocol + '://' + req.get('host');
+  // if (req.file) {
+  //   req.body.coverImage = `/images/books/${req.file.filename}`
+  // }
+  // const doc = await Books.create(req.body);
 
+  console.log(req.file);
   res.status(201).json(
     {
       status: "success",
       data: {
-        data: doc
+        // data: doc
       }
     }
   );
